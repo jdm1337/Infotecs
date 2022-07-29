@@ -29,7 +29,6 @@ namespace Task1
                 
             }
             Copy(sourcePathsList, timestampDirectoryPath);
-
         }
 
         private void Copy(List<string> sourcePathsList, string timestampDirectoryPath)

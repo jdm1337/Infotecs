@@ -21,8 +21,7 @@ public class Program
                 .MinimumLevel.Is(logLevelValue)
                 .WriteTo.Console()
                 .WriteTo.File(logfileName,
-            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
-            )
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
             Log.Information("Application started");
@@ -72,6 +71,7 @@ public class Program
         {
             logLevelValue = Serilog.Events.LogEventLevel.Debug;
         }
+
         return logLevelValue;
     }
 }

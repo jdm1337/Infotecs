@@ -1,19 +1,18 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Task1
 {
     internal class CopyMaster
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<CopyMaster> _logger;
 
-        public CopyMaster(IConfiguration configuration)
+        public CopyMaster(IConfiguration configuration,
+            ILogger<CopyMaster> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
         public void Execute()
@@ -22,46 +21,79 @@ namespace Task1
             var targetPath = GetTargetPath();
 
             var timestampDirectoryPath = CreateTimestampDirectory(targetPath);
+            Console.WriteLine(string.IsNullOrEmpty(timestampDirectoryPath));
+            if (string.IsNullOrEmpty(timestampDirectoryPath) ||
+                string.IsNullOrEmpty(targetPath))
+            {
+                _logger.LogInformation("Application stoped. Press Ctrl + C to close the window");
+                
+            }
             Copy(sourcePathsList, timestampDirectoryPath);
+
         }
 
         private void Copy(List<string> sourcePathsList, string timestampDirectoryPath)
         {
             string fileName;
-            string destFile;
+            string destinationFile;
             foreach (var sourcePath in sourcePathsList)
             {
                 if (Directory.Exists(sourcePath))
                 {
                     string[] files = Directory.GetFiles(sourcePath);
-
+                    _logger.LogInformation($"Directory: {sourcePath} in progress");
                     foreach (string file in files)
                     {
                         fileName = Path.GetFileName(file);
-                        destFile = Path.Combine(timestampDirectoryPath, fileName);
-                        File.Copy(file, destFile, true);
+                        destinationFile = Path.Combine(timestampDirectoryPath, fileName);
+                        try
+                        {
+                            File.Copy(file, destinationFile, true);
+                            _logger.LogDebug($"File: {fileName} successfully copied to {destinationFile}");
+                        }
+                        catch(UnauthorizedAccessException ex)
+                        {
+                            _logger.LogInformation($"Failed to copy file: {fileName}, access denied");
+                        }
                     }
+                    _logger.LogInformation($"Directory: {sourcePath} processed");
                 }
                 else
                 {
-                    Console.WriteLine("Source path does not exist!");
+                    _logger.LogInformation($"Source path: {sourcePath} does not exist");
                 }
             }
         }
 
         private string GetTargetPath()
         {
-            return _configuration.GetSection("TargetPath").Value;
+            try
+            {
+                var targetPath = _configuration.GetSection("TargetPath").Value;
+                return targetPath;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Enable to get path of target directory");
+                return "";
+            }
         }
 
         private string CreateTimestampDirectory(string targetPath)
         {
             string timespan = DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd_HH_mm");
             var timestampDirectoryPath = Path.Combine(targetPath, timespan);
+            try
+            {
+                var directoryInfo = Directory.CreateDirectory(timestampDirectoryPath);
+                return directoryInfo.FullName;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Enable to create timestampFolder, check target folder permissions and try again");
+                return "";
+            }
 
-            var directoryInfo = Directory.CreateDirectory(timestampDirectoryPath);
-            return directoryInfo.FullName;
-            
         }
 
         private List<string> GetSourcePaths()

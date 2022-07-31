@@ -6,22 +6,19 @@ using System.ServiceModel.Syndication;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Task2.Services;
 
 namespace Task2.Components
 {
     public class FeedModel : ComponentBase
     {
         public SyndicationFeed Feed { get; set; }
-        private readonly IConfiguration _configuration;
-        public FeedModel(IConfiguration configuration)
-        {
-            _configuration = configuration; 
-        }
+        [Inject]
+        protected FeedService FeedService { get; set; }
+        
         protected override async Task OnInitializedAsync()
         {
-            var url = "https://habr.com/ru/rss/interesting/";
-            using var reader = XmlReader.Create(url);
-            Feed = SyndicationFeed.Load(reader);
+            Feed = FeedService.Feed;
         }
     }
 }

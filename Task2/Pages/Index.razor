@@ -1,37 +1,26 @@
 ﻿@page "/"
 @using System.Xml
 @using System.ServiceModel.Syndication
+@using Task2.Components
+@inherits FeedModel
 
 <PageTitle>Index</PageTitle>
 
-<h1>Feed line</h1>
+<h1>Feed</h1>
 
     <div class="container">
         <div class="text-left my-1">
             <ul class="list-group">
-            @foreach(var item in feed.Items.Take(10))
+            @foreach(var item in Feed.Items.Take(10))
                 {
                     <li class="list-group-item">
                         <h5><a href="@item.Links[0].Uri.ToString()">@item.Title.Text</a></h5>
                         <p>Publish date: @item.PublishDate.DateTime.ToString("dd-MM-yyyy hh:mm")</p>
                         <p>Description: @item.Summary.Text</p>
                     </li>
+                    <button class="btn btn-primary" ="IncrementCount">Click me</button>
                 }
             </ul> 
         </div>            
     </div>  
 
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-@code{
-    private SyndicationFeed feed;
-    protected override async Task OnInitializedAsync()
-    {
-        var url = "https://habr.com/ru/rss/interesting/";
-        using var reader = XmlReader.Create(url);
-        feed = SyndicationFeed.Load(reader);
-    }
-}

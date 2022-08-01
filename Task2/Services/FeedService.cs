@@ -14,16 +14,21 @@ namespace Task2.Services
         public FeedService(IConfiguration configuration, TaskScheduleService taskScheduleService)
         {
             _configuration = configuration;
-            RssUrl = configuration.GetSection("RssUrl").Value;
-            UpdateInterval = Convert.ToInt32(configuration.GetSection("UpdateInterval").Value);
             this.taskScheduleService = taskScheduleService;
             taskScheduleService.Execute(UpdateData, UpdateInterval);
-            
+
         }
         protected void UpdateData()
         {
             using var reader = XmlReader.Create(RssUrl);
             Feed = SyndicationFeed.Load(reader);
         }
+        public void Start()
+        {
+            RssUrl = _configuration.GetSection("RssUrl").Value;
+            UpdateInterval = Convert.ToInt32(_configuration.GetSection("UpdateInterval").Value);
+            taskScheduleService.Execute(UpdateData, UpdateInterval);
+        }
+
     }
 }

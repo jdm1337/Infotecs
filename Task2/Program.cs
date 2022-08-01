@@ -11,7 +11,8 @@ builder.Services.AddTransient<TaskScheduleService>();
 builder.Services.AddSingleton<FeedService>();
 
 var app = builder.Build();
-
+var feedService = app.Services.GetRequiredService<FeedService>();
+feedService.Start();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

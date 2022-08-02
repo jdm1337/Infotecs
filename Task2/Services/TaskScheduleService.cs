@@ -2,7 +2,6 @@
 {
     public class TaskScheduleService
     {
-
         public TaskScheduleService()
         {
 
@@ -18,6 +17,5 @@
                 }
             }, token);
         }
-
     }
 }

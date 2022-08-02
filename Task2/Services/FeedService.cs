@@ -29,6 +29,5 @@ namespace Task2.Services
             UpdateInterval = Convert.ToInt32(_configuration.GetSection("UpdateInterval").Value);
             taskScheduleService.Execute(UpdateData, UpdateInterval);
         }
-
     }
 }

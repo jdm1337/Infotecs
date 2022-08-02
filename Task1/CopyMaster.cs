@@ -21,7 +21,6 @@ namespace Task1
             var targetPath = GetTargetPath();
 
             var timestampDirectoryPath = CreateTimestampDirectory(targetPath);
-            Console.WriteLine(string.IsNullOrEmpty(timestampDirectoryPath));
             if (string.IsNullOrEmpty(timestampDirectoryPath) ||
                 string.IsNullOrEmpty(targetPath))
             {
@@ -41,6 +40,7 @@ namespace Task1
                 {
                     string[] files = Directory.GetFiles(sourcePath);
                     _logger.LogInformation($"Directory: {sourcePath} in progress");
+
                     foreach (string file in files)
                     {
                         fileName = Path.GetFileName(file);
@@ -55,6 +55,7 @@ namespace Task1
                             _logger.LogInformation($"Failed to copy file: {fileName}, access denied");
                         }
                     }
+
                     _logger.LogInformation($"Directory: {sourcePath} processed");
                 }
                 else

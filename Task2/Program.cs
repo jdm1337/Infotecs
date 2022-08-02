@@ -1,5 +1,3 @@
-
-
 using Task2.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +7,11 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddTransient<TaskScheduleService>();
 builder.Services.AddSingleton<FeedService>();
+
+
+builder.WebHost.UseStaticWebAssets();
+
+builder.WebHost.UseStaticWebAssets();
 
 var app = builder.Build();
 var feedService = app.Services.GetRequiredService<FeedService>();

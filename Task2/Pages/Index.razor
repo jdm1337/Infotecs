@@ -11,7 +11,7 @@
     <div class="container">
         <div class="text-left my-1">
             <ul class="list-group">
-            @foreach(var item in Feed.Items.Take(10))
+            @foreach(var item in Feed.Items)
                 {
                     <li class="list-group-item">
                         <h5><a href="@item.Links[0].Uri.ToString()">@item.Title.Text</a></h5>
